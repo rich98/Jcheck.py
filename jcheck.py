@@ -1,6 +1,7 @@
 import os
 import subprocess
 import psutil
+import re
 
 def check_java():
     try:
@@ -29,6 +30,15 @@ def check_java_running():
             return True
     return False
 
+def get_java_version():
+    version_output = subprocess.check_output(['java', '-version'], stderr=subprocess.STDOUT).decode()
+    version_regex = r'\"(\d+\.\d+).*\"'
+    version_match = re.search(version_regex, version_output)
+    if version_match:
+        return version_match.group(1)
+    else:
+        return None
+
 if check_java():
     print("Java is installed on your system.")
     print("The path of the Java installation is:", get_java_path())
@@ -40,5 +50,10 @@ if check_java():
         print("Java is running as a process.")
     else:
         print("Java is not running as a process.")
+    java_version = get_java_version()
+    if java_version:
+        print("The version of Java found is:", java_version)
+    else:
+        print("Could not determine the version of Java.")
 else:
     print("Java is not installed on your system.")
