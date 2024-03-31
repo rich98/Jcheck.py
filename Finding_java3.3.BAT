@@ -60,17 +60,17 @@ if %ERRORLEVEL% EQU 0 (
 :nextver
 for /f "tokens=4-5 delims=. " %%i in ('ver') do (
     if "%%i.%%j"=="10.0" (
-        set osv=Windows 10-11\20XX
+        set osv=10.0 Windows 10-11\20XX
     ) else if "%%i.%%j"=="6.3" (
-        set osv=Windows 8.1\2012R2
+        set osv=6.3 Windows 8.1\2012R2
     ) else if "%%i.%%j"=="6.2" (
-        set osv=Windows 8\2012
+        set osv=6.2 Windows 8\2012
     ) else if "%%i.%%j"=="6.1" (
-        set osv=Windows 7\win2k8 R2
+        set osv=6.1 Windows 7\win2k8 R2
     ) else if "%%i.%%j"=="6.0" (
-        set osv=Windows Vista\win2k8
+        set osv=6.0 Windows Vista\win2k8
     ) else if "%%i.%%j"=="5.2" (
-        set osv=Windows win2k3
+        set osv=5.2 Windows win2k3
     )
 )
 
@@ -288,6 +288,8 @@ setlocal enabledelayedexpansion
 set "BMN=DEBUG"
 set "search_file1=*java.exe"
 set "search_file2=*javaw.exe"
+set "search_file3=*javac.exe"
+set "search_file4=*javas.exe"
 
 rem Get the current date and time
 for /f "tokens=2 delims==" %%a in ('wmic OS Get localdatetime /value') do set "dt=%%a"
@@ -302,6 +304,8 @@ for /f %%d in ('wmic logicaldisk where "drivetype=3" get caption ^| find ":"') d
     echo Searching in %%d\
     call :searchdebug "%%d\" %search_file1%
     call :searchdebug "%%d\" %search_file2%
+	call :searchdebug "%%d\" %search_file3%
+	call :searchdebug "%%d\" %search_file4%	
 )
 
 echo Hostname: %computername% >> %debug_file%
