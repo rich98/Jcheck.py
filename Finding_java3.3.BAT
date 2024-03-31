@@ -46,25 +46,37 @@ echo Only report Javas that have been flagged as a "WARNING"
 echo ******************************************************************************************************
 rem lookup opertating system 
 :lookupOS
-for /f "tokens=4-5 delims=. " %%i in ('ver') do set OSVERSION=%%i.%%j
-
-if "%osversion%" == "10.0" (
-    set osv=Windows 10-11\20XX
-) else if "%osversion%" == "6.3" (
-    set osv=Windows 8.1\2012R2
-) else if "%osversion%" == "6.2" (
-    set osv=Windows 8\2012
-) else if "%osversion%" == "6.1" (
-    set osv=Windows 7\win2k8 R2
-) else if "%osversion%" == "6.0" (
-    set osv=Windows Vista\win2k8
-) else if "%osversion%" == "5.2" (
-    set osv=Windows win2k3
-) else if "%osversion%" == "[Versiom.5" (
-    set osv=Windows XP
-	set osversion=5.0
+echo off
+systeminfo | findstr /B /C:"OS Name" > %temp%\osname.txt
+find /I "XP" %temp%\osname.txt > nul
+if %ERRORLEVEL% EQU 0 (
+    set osv=5.1 Windows XP
+) else (
+    goto nextver
 )
-echo %osversion% %osv%
+
+:nextver
+for /f "tokens=4-5 delims=. " %%i in ('ver') do (
+    if "%%i.%%j"=="10.0" (
+        set osv=Windows 10-11\20XX
+    ) else if "%%i.%%j"=="6.3" (
+        set osv=Windows 8.1\2012R2
+    ) else if "%%i.%%j"=="6.2" (
+        set osv=Windows 8\2012
+    ) else if "%%i.%%j"=="6.1" (
+        set osv=Windows 7\win2k8 R2
+    ) else if "%%i.%%j"=="6.0" (
+        set osv=Windows Vista\win2k8
+    ) else if "%%i.%%j"=="5.2" (
+        set osv=Windows win2k3
+    )
+)
+
+if defined osv (
+    echo %osv%
+) else (
+    echo Unknown Operating System
+)
 
 reg Query "HKLM\Hardware\Description\System\CentralProcessor\0" | find /i "x86" > NUL && set OS=32BIT || set OS=64BIT
 if %OS%==32BIT echo 32bit operating system
@@ -144,13 +156,18 @@ echo ***************************************************************************
 :tail
 rem tail entries for ref.
 echo ***** Data classification set to %clss% *****
-echo Hostname: %computername% >> %results_file%
-echo WMIC used? - %wmic% >> %results_file%
-echo Script version: %scriptver% >> %results_file%
 echo BMN Number: BMN%BMN% >> %results_file%
+echo BMN Number: BMN%BMN%
+echo Hostname: %computername% >> %results_file%
+echo Hostname: %computername% 
 echo %osversion% %osv% >> %results_file%
+echo %osversion% %osv%
+echo WMIC used? - %wmic% >> %results_file%
+echo WMIC used? - %wmic%
+echo Script version: %scriptver% >> %results_file%
+echo Script version: %scriptver%
 echo Did the user set admin? %admin% >> %results_file%
-echo Script version %scriptver%
+echo Did the user set admin? %admin%
 echo User selected classification: %clss% >> %results_file%
 
 REM check if JAVA_HOME is defined and test
@@ -262,6 +279,7 @@ if %errorlevel% == 0 (
 pause
 )
 exit/b
+
 :debug
 color 1F
 setlocal enabledelayedexpansion
@@ -303,6 +321,7 @@ echo Search complete. Results saved to %debug_file%
 set /p rerun="Do you want to rerun the script? (yes/no): "
 if /i "%rerun%"=="yes" goto begindebug
  exit /b
+ 
 :searchdebug
 for /r %1 %%f in (%2) do (
     echo Found: %%f >> %debug_file%
