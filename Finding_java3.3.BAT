@@ -1,13 +1,16 @@
 @echo off
-rem Check if /debug switch is used
-if "%1" == "/legacy" (
-    goto legacy
-)
+
+
 setlocal enabledelayedexpansion
 
 rem Check if /debug switch is used
 if "%1" == "/debug" (
     goto begindebug
+)
+
+rem Check if /debug switch is used
+if "%1" == "/legacy" (
+    goto legacy
 )
 
 wmic cpu get name >nul 2>&1
@@ -106,14 +109,14 @@ echo ***************************************************************************
 
 	set scriptver=3.3 (final release)
 	if /i "%govclass%"=="o" (
-		set clss="OFFICIAL"
+		set clss="HMG OFFICIAL"
 	) else if /i "%govclass%"=="os" (
-		set clss="OFFICIAL SENSITIVE"
+		set clss="HMG OFFICIAL SENSITIVE"
 	) else if /i "%govclass%"=="s" (
-		set clss="SECRET"
+		set clss="HMG SECRET"
 	) else if /i "%govclass%"=="sukeo" (
-		set clss="SUKEO"
-	) else if /i "%govclass%"=="occar-r" (
+		set clss="HMG SECRET UK EYES ONLY"
+	) else if /i "%govclass%"=="Ooccar-r" (
 		set clss="OCCAR-RESCRICTED"
 	) else if /i "%govclass%"=="c1" (
 		set clss="C1:OPEN DESIGNED TO BE SHARED PUBLICLY"
