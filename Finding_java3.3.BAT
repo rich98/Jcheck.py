@@ -1,13 +1,13 @@
 @echo off
+rem Check if /debug switch is used
+if "%1" == "/legacy" (
+    goto legacy
+)
 setlocal enabledelayedexpansion
 
 rem Check if /debug switch is used
 if "%1" == "/debug" (
     goto begindebug
-)
-rem Check if /debug switch is used
-if "%1" == "/legacy" (
-    goto legacy
 )
 
 wmic cpu get name >nul 2>&1
@@ -25,12 +25,12 @@ if %errorlevel% equ 0 (
 cls
 set /p DR="Select which drive to scan. ONLY ENTER THE LETTER:
 echo Running in legacy mode Please wait...............
-dir /s /b %DR%:\java.exe >legacymode.txt
-echo Leagcy mode finished searching %DR%: Please review the legacymode.txt file
+dir /s /b %DR%:\java.exe >legacymode(%DR%).txt
+echo Leagcy mode finished searching %DR%: Please review the legacymode[%DR%].txt file
 set /p rerunleg="Do you want to rerun the script? (yes/no): "
 if /i "%rerunleg%"=="yes" goto legacy
 
- exit /b
+exit /b
 
 goto legacy
 pause
@@ -42,10 +42,11 @@ mode 130
 cls
 color 0F
 echo ******************************************************************************************************
-echo Java Rationalisation Program - UK
+echo Java Rationalisation Program - UK                                                                        
 echo ******************************************************************************************************
 echo Only report Javas that have been flagged as a "WARNING"
 echo ******************************************************************************************************
+
 rem lookup opertating system 
 :lookupOS
 echo off
@@ -156,21 +157,21 @@ echo ***************************************************************************
 		call :search "%%d\" %search_file2%
 	)
 :tail
-rem tail entries for ref.
-echo ***** Data classification set to %clss% *****
-echo BMN Number: BMN%BMN% >> %results_file%
-echo BMN Number: BMN%BMN%
-echo Hostname: %computername% >> %results_file%
-echo Hostname: %computername% 
-echo %osversion% %osv% >> %results_file%
-echo %osversion% %osv%
-echo WMIC used? - %wmic% >> %results_file%
-echo WMIC used? - %wmic%
-echo Script version: %scriptver% >> %results_file%
-echo Script version: %scriptver%
-echo Did the user set admin? %admin% >> %results_file%
-echo Did the user set admin? %admin%
-echo User selected classification: %clss% >> %results_file%
+	rem tail entries for ref.
+	echo ***** Data classification set to %clss% *****
+	echo BMN Number: BMN%BMN% >> %results_file%
+	echo BMN Number: BMN%BMN%
+	echo Hostname: %computername% >> %results_file%
+	echo Hostname: %computername% 
+	echo %osversion% %osv% >> %results_file%
+	echo %osversion% %osv%
+	echo WMIC used? - %wmic% >> %results_file%
+	echo WMIC used? - %wmic%
+	echo Script version: %scriptver% >> %results_file%
+	echo Script version: %scriptver%
+	echo Did the user set admin? %admin% >> %results_file%
+	echo Did the user set admin? %admin%
+	echo User selected classification: %clss% >> %results_file%
 
 REM check if JAVA_HOME is defined and test
 if not defined JAVA_HOME (
@@ -342,9 +343,3 @@ for /r %1 %%f in (%2) do (
         rem Add your additional checks or actions here if needed
     )
 )
-
-
-
-
-
-
