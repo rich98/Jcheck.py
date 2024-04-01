@@ -1,5 +1,8 @@
 @echo off
-
+rem Check if /debug switch is used
+if "%1" == "/2000" (
+    goto legacy
+)
 
 setlocal enabledelayedexpansion
 
